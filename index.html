@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Слово + Суффикс = Прилагательное!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">📚</div>
+        <h1>Слово + Суффикс = Прилагательное!</h1>
+        <div class="lightbulb">💡</div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Колонки с суффиксами -->
+            <div class="columns-container" id="columns">
+                <!-- Генерируются JS -->
+            </div>
+
+            <!-- Кнопка подсказки -->
+            <button id="hintBtn" class="hint-btn">💡 Показать подсказку</button>
+
+            <!-- Подсказка (скрыта по умолчанию) -->
+            <div id="hintBox" class="hint-box">
+                <h3>Подсказка: возможные прилагательные</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Суффикс</th>
+                            <th>Прилагательные</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>-ous</td><td>poisonous, humorous, mysterious</td></tr>
+                        <tr><td>-ful</td><td>beautiful, peaceful, successful</td></tr>
+                        <tr><td>-y</td><td>foggy, cloudy, hungry</td></tr>
+                        <tr><td>-al</td><td>original, financial, natural</td></tr>
+                        <tr><td>-ent</td><td>obedient, different, dependent</td></tr>
+                        <tr><td>-ant</td><td>hesitant, tolerant, important</td></tr>
+                        <tr><td>-ive</td><td>active, decisive, protective</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Слова для перетаскивания -->
+            <div class="word-bank">
+                <h3>Перетащите слова в нужные колонки</h3>
+                <div class="words" id="wordBank">
+                    <!-- Генерируются JS -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
