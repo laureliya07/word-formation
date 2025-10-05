@@ -258,3 +258,20 @@ header .lightbulb {
 #checkBtn:hover {
     background: #45a049;
 }
+
+.word-bank {
+    margin-top: 30px;
+    min-height: 80px; /* Чтобы было куда перетаскивать */
+}
+
+.words {
+    min-height: 60px; /* Чтобы в банк можно было перетащить */
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Иконки */
+.word span.icon {
+    font-size: 1.2rem;
+}
