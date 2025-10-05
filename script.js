@@ -1,3 +1,13 @@
+// Функция для перемешивания массива (алгоритм Фишера–Йейтса)
+function shuffle(array) {
+    const arr = [...array]; // создаём копию
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
 // Данные — суффиксы
 const suffixes = [
     { name: '-ous', color: '#4285F4' },
@@ -29,14 +39,14 @@ const words = [
 
     { word: 'differ', icon: '↔️', adjective: 'different', suffix: '-ent' },
     { word: 'obey', icon: '👍', adjective: 'obedient', suffix: '-ent' },
-    { word: 'dependent', icon: '🔗', adjective: 'dependent', suffix: '-ent' }, // ❗ заменили "appear"
+    { word: 'dependent', icon: '🔗', adjective: 'dependent', suffix: '-ent' },
 
     { word: 'hesitate', icon: '🤔', adjective: 'hesitant', suffix: '-ant' },
     { word: 'tolerate', icon: '🤝', adjective: 'tolerant', suffix: '-ant' },
-    { word: 'important', icon: '❗', adjective: 'important', suffix: '-ant' }, // ❗ заменили "ignore"
+    { word: 'important', icon: '❗', adjective: 'important', suffix: '-ant' },
 
     { word: 'decide', icon: '✅', adjective: 'decisive', suffix: '-ive' },
-    { word: 'active', icon: '⚡', adjective: 'active', suffix: '-ive' }, // ❗ заменили "create"
+    { word: 'active', icon: '⚡', adjective: 'active', suffix: '-ive' },
     { word: 'protect', icon: '🛡️', adjective: 'protective', suffix: '-ive' }
 ];
 
@@ -80,12 +90,23 @@ function createColumns() {
 // Делаем банк приёмником перетаскивания
 wordBank.addEventListener('dragover', e => {
     e.preventDefault();
+    wordBank.classList.add('dragover');
 });
-wordBank.addEventListener('drop', handleDropToBank);
 
-// Генерация слов
+wordBank.addEventListener('dragleave', () => {
+    wordBank.classList.remove('dragover');
+});
+
+wordBank.addEventListener('drop', e => {
+    e.preventDefault();
+    wordBank.classList.remove('dragover');
+    handleDropToBank(e);
+});
+
+// Генерация слов (в случайном порядке)
 function createWords() {
-    words.forEach(wordObj => {
+    const shuffledWords = shuffle(words); // ← перемешиваем!
+    shuffledWords.forEach(wordObj => {
         const wordEl = document.createElement('div');
         wordEl.className = 'word';
         wordEl.draggable = true;
@@ -188,23 +209,30 @@ checkBtn.addEventListener('click', () => {
         el.classList.remove('correct', 'wrong');
     });
 
-    let allCorrect = true;
+    let hasErrors = false;
+    let totalWordsInColumns = 0;
 
     Object.keys(columnWords).forEach(suffix => {
         columnWords[suffix].forEach(item => {
+            totalWordsInColumns++;
             if (item.correctSuffix === item.actualSuffix) {
                 item.element.classList.add('correct');
             } else {
                 item.element.classList.add('wrong');
-                allCorrect = false;
+                hasErrors = true;
             }
         });
     });
 
-    if (allCorrect) {
-        alert("🎉 Все слова распределены правильно!");
+    if (totalWordsInColumns === 0) {
+        alert("🤔 Сначала перетащи хотя бы одно слово в колонку!");
+        return;
+    }
+
+    if (hasErrors) {
+        alert("⚠️ Некоторые слова распределены неправильно. Попробуй ещё раз!");
     } else {
-        alert("⚠️ Есть ошибки. Попробуй ещё раз!");
+        alert("🎉 Ты справился! Отличная работа!");
     }
 });
 
