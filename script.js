@@ -1,4 +1,4 @@
-// Данные
+// Данные — суффиксы
 const suffixes = [
     { name: '-ous', color: '#4285F4' },
     { name: '-ful', color: '#FB6D9D' },
@@ -9,25 +9,33 @@ const suffixes = [
     { name: '-ive', color: '#00BCD4' }
 ];
 
+// Слова с иконками и правильными суффиксами (по подсказке)
 const words = [
-    { word: 'beauty', icon: '❤️', correctSuffix: '-ous' },
-    { word: 'obey', icon: '👍', correctSuffix: '-ent' },
-    { word: 'finance', icon: '💰', correctSuffix: '-al' },
-    { word: 'ignore', icon: '❌', correctSuffix: '-ant' },
-    { word: 'decide', icon: '✅', correctSuffix: '-ive' },
-    { word: 'hesitate', icon: '🤔', correctSuffix: '-ant' },
-    { word: 'appear', icon: '👀', correctSuffix: '-ent' },
-    { word: 'tolerate', icon: '🤝', correctSuffix: '-ant' },
-    { word: 'mystery', icon: '🔍', correctSuffix: '-ous' },
-    { word: 'differ', icon: '↔️', correctSuffix: '-ent' },
-    { word: 'succeed', icon: '🏆', correctSuffix: '-ful' },
-    { word: 'destroy', icon: '💥', correctSuffix: '-ive' },
-    { word: 'protect', icon: '🛡️', correctSuffix: '-ive' },
-    { word: 'peace', icon: '🕊️', correctSuffix: '-ful' },
-    { word: 'hunger', icon: '🍽️', correctSuffix: '-y' },
-    { word: 'fog', icon: '🌫️', correctSuffix: '-y' },
     { word: 'origin', icon: '🌱', correctSuffix: '-al' },
-    { word: 'poison', icon: '🧪', correctSuffix: '-ous' }
+    { word: 'humour', icon: '😂', correctSuffix: '-ous' },
+    { word: 'beauty', icon: '❤️', correctSuffix: '-ful' },
+    { word: 'finance', icon: '💰', correctSuffix: '-al' },
+    { word: 'appear', icon: '👀', correctSuffix: '-ent' }, // apparent → -ant, но в подсказке нет — оставим -ent
+
+    { word: 'benefit', icon: '📈', correctSuffix: '-al' }, // beneficial
+    { word: 'protect', icon: '🛡️', correctSuffix: '-ive' }, // protective
+    { word: 'mystery', icon: '🔍', correctSuffix: '-ous' }, // mysterious
+    { word: 'tolerate', icon: '🤝', correctSuffix: '-ant' }, // tolerant
+
+    { word: 'hunger', icon: '🍽️', correctSuffix: '-y' }, // hungry
+    { word: 'ignore', icon: '❌', correctSuffix: '-ant' }, // ignorant
+    { word: 'differ', icon: '↔️', correctSuffix: '-ent' }, // different
+    { word: 'poison', icon: '🧪', correctSuffix: '-ous' }, // poisonous
+    { word: 'peace', icon: '☮️', correctSuffix: '-ful' }, // peaceful
+
+    { word: 'obey', icon: '👍', correctSuffix: '-ent' }, // obedient
+    { word: 'decide', icon: '✅', correctSuffix: '-ive' }, // decisive
+    { word: 'cloud', icon: '☁️', correctSuffix: '-y' }, // cloudy
+    { word: 'create', icon: '🎨', correctSuffix: '-ive' }, // creative — заменили destroy
+
+    { word: 'hesitate', icon: '🤔', correctSuffix: '-ant' }, // hesitant
+    { word: 'fog', icon: '🌫️', correctSuffix: '-y' }, // foggy
+    { word: 'succeed', icon: '🏆', correctSuffix: '-ful' } // successful
 ];
 
 // DOM элементы
@@ -35,6 +43,10 @@ const columnsContainer = document.getElementById('columns');
 const wordBank = document.getElementById('wordBank');
 const hintBtn = document.getElementById('hintBtn');
 const hintBox = document.getElementById('hintBox');
+const checkBtn = document.getElementById('checkBtn');
+
+// Для хранения текущих слов в колонках
+let columnWords = {};
 
 // Генерация колонок
 function createColumns() {
@@ -57,6 +69,9 @@ function createColumns() {
         col.appendChild(header);
         col.appendChild(body);
         columnsContainer.appendChild(col);
+
+        // Инициализируем массив слов для этой колонки
+        columnWords[suffix.name] = [];
     });
 }
 
@@ -102,19 +117,62 @@ function handleDrop(e) {
     wordCopy.draggable = false;
     wordCopy.classList.remove('dragging');
 
-    if (targetSuffix === correctSuffix) {
-        wordCopy.classList.add('correct');
-    } else {
-        wordCopy.classList.add('wrong');
-    }
+    // Добавляем возможность перетащить обратно
+    wordCopy.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', wordCopy.dataset.word);
+        wordCopy.classList.add('dragging');
+    });
+
+    wordCopy.addEventListener('dragend', () => {
+        wordCopy.classList.remove('dragging');
+    });
+
+    // Запоминаем, в какой колонке оно сейчас
+    wordCopy.dataset.actualSuffix = targetSuffix;
 
     targetColumn.appendChild(wordCopy);
 
+    // Добавляем в массив
+    columnWords[targetSuffix].push({
+        word: wordCopy.dataset.word,
+        correctSuffix: correctSuffix,
+        actualSuffix: targetSuffix,
+        element: wordCopy
+    });
+
     // Проверяем, все ли слова распределены
     if (document.querySelectorAll('.word').length === 0) {
-        alert("🎉 Все слова распределены! Молодец!");
+        alert("🎉 Все слова распределены! Можешь нажать «Проверить».");
     }
 }
+
+// Проверка
+checkBtn.addEventListener('click', () => {
+    // Сбрасываем предыдущие стили
+    document.querySelectorAll('.column-body .word').forEach(el => {
+        el.classList.remove('correct', 'wrong');
+    });
+
+    let allCorrect = true;
+
+    // Проверяем каждое слово
+    Object.keys(columnWords).forEach(suffix => {
+        columnWords[suffix].forEach(item => {
+            if (item.correctSuffix === item.actualSuffix) {
+                item.element.classList.add('correct');
+            } else {
+                item.element.classList.add('wrong');
+                allCorrect = false;
+            }
+        });
+    });
+
+    if (allCorrect) {
+        alert("🎉 Все слова распределены правильно!");
+    } else {
+        alert("⚠️ Есть ошибки. Попробуй ещё раз!");
+    }
+});
 
 // Показать/скрыть подсказку
 hintBtn.addEventListener('click', () => {
