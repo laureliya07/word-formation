@@ -35,7 +35,7 @@ const words = [
 
     { word: 'finance', icon: '💰', adjective: 'financial', suffix: '-al' },
     { word: 'benefit', icon: '📈', adjective: 'beneficial', suffix: '-al' },
-    { word: 'origin', icon: '🌱', adjective: 'original', suffix: '-al' },
+    { word: 'nature', icon: '🌿', adjective: 'natural', suffix: '-al' },
 
     { word: 'differ', icon: '↔️', adjective: 'different', suffix: '-ent' },
     { word: 'obey', icon: '👍', adjective: 'obedient', suffix: '-ent' },
@@ -125,6 +125,24 @@ function createWords() {
     });
 }
 
+// Удаляем слово из всех колонок (на случай, если оно уже где-то есть)
+function removeWordFromAllColumns(wordElement) {
+    const wordText = wordElement.textContent.split(' ')[0]; // получаем слово без иконки
+    Object.keys(columnWords).forEach(suffix => {
+        columnWords[suffix] = columnWords[suffix].filter(item => {
+            const itemWord = item.element.textContent.split(' ')[0];
+            if (itemWord === wordText) {
+                // Удаляем элемент из DOM
+                if (item.element.parentNode) {
+                    item.element.parentNode.removeChild(item.element);
+                }
+                return false;
+            }
+            return true;
+        });
+    });
+}
+
 // Обработчик бросания в колонку
 function handleDropToColumn(e) {
     e.preventDefault();
@@ -138,8 +156,11 @@ function handleDropToColumn(e) {
     const correctSuffix = draggedWord.dataset.suffix;
     const adjective = draggedWord.dataset.adjective;
 
+    // 🔥 Удаляем слово из всех колонок и из банка
+    removeWordFromAllColumns(draggedWord);
     draggedWord.remove();
 
+    // Создаём копию слова в колонке
     const wordCopy = draggedWord.cloneNode(true);
     wordCopy.draggable = true;
     wordCopy.classList.remove('dragging');
@@ -155,6 +176,7 @@ function handleDropToColumn(e) {
     wordCopy.dataset.actualSuffix = targetSuffix;
     targetColumn.appendChild(wordCopy);
 
+    // Добавляем в новую колонку
     columnWords[targetSuffix].push({
         word: wordCopy.dataset.word,
         adjective: adjective,
@@ -170,8 +192,11 @@ function handleDropToBank(e) {
     const draggedWord = document.querySelector('.dragging');
     if (!draggedWord) return;
 
+    // Удаляем из всех колонок
+    removeWordFromAllColumns(draggedWord);
     draggedWord.remove();
 
+    // Возвращаем в банк
     const wordCopy = draggedWord.cloneNode(true);
     wordCopy.draggable = true;
     wordCopy.classList.remove('dragging');
@@ -185,11 +210,6 @@ function handleDropToBank(e) {
     });
 
     wordBank.appendChild(wordCopy);
-
-    const actualSuffix = draggedWord.dataset.actualSuffix;
-    if (actualSuffix && columnWords[actualSuffix]) {
-        columnWords[actualSuffix] = columnWords[actualSuffix].filter(item => item.element !== draggedWord);
-    }
 }
 
 // Проверка
