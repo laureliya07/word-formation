@@ -1,6 +1,6 @@
 // Функция для перемешивания массива (алгоритм Фишера–Йейтса)
 function shuffle(array) {
-    const arr = [...array]; // создаём копию
+    const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -74,7 +74,6 @@ function createColumns() {
         body.className = 'column-body';
         body.dataset.suffix = suffix.name;
 
-        // Разрешаем принимать перетаскивание
         body.addEventListener('dragover', e => e.preventDefault());
         body.addEventListener('drop', handleDropToColumn);
 
@@ -82,7 +81,6 @@ function createColumns() {
         col.appendChild(body);
         columnsContainer.appendChild(col);
 
-        // Инициализируем массив слов для этой колонки
         columnWords[suffix.name] = [];
     });
 }
@@ -105,7 +103,7 @@ wordBank.addEventListener('drop', e => {
 
 // Генерация слов (в случайном порядке)
 function createWords() {
-    const shuffledWords = shuffle(words); // ← перемешиваем!
+    const shuffledWords = shuffle(words);
     shuffledWords.forEach(wordObj => {
         const wordEl = document.createElement('div');
         wordEl.className = 'word';
@@ -140,15 +138,12 @@ function handleDropToColumn(e) {
     const correctSuffix = draggedWord.dataset.suffix;
     const adjective = draggedWord.dataset.adjective;
 
-    // Удаляем слово из текущего места
     draggedWord.remove();
 
-    // Создаём копию слова в колонке
     const wordCopy = draggedWord.cloneNode(true);
     wordCopy.draggable = true;
     wordCopy.classList.remove('dragging');
 
-    // Добавляем обработчики
     wordCopy.addEventListener('dragstart', e => {
         e.dataTransfer.setData('text/plain', wordCopy.dataset.word);
         wordCopy.classList.add('dragging');
@@ -158,10 +153,8 @@ function handleDropToColumn(e) {
     });
 
     wordCopy.dataset.actualSuffix = targetSuffix;
-
     targetColumn.appendChild(wordCopy);
 
-    // Обновляем данные
     columnWords[targetSuffix].push({
         word: wordCopy.dataset.word,
         adjective: adjective,
@@ -177,10 +170,8 @@ function handleDropToBank(e) {
     const draggedWord = document.querySelector('.dragging');
     if (!draggedWord) return;
 
-    // Удаляем слово из текущего места
     draggedWord.remove();
 
-    // Восстанавливаем исходный вид
     const wordCopy = draggedWord.cloneNode(true);
     wordCopy.draggable = true;
     wordCopy.classList.remove('dragging');
@@ -195,7 +186,6 @@ function handleDropToBank(e) {
 
     wordBank.appendChild(wordCopy);
 
-    // Удаляем из columnWords
     const actualSuffix = draggedWord.dataset.actualSuffix;
     if (actualSuffix && columnWords[actualSuffix]) {
         columnWords[actualSuffix] = columnWords[actualSuffix].filter(item => item.element !== draggedWord);
@@ -204,7 +194,6 @@ function handleDropToBank(e) {
 
 // Проверка
 checkBtn.addEventListener('click', () => {
-    // Сбрасываем предыдущие стили
     document.querySelectorAll('.column-body .word').forEach(el => {
         el.classList.remove('correct', 'wrong');
     });
