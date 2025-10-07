@@ -109,7 +109,7 @@ header .lightbulb {
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-/* Иконки (можно заменить на emoji или SVG) */
+/* Иконки */
 .word span.icon {
     font-size: 1.2rem;
 }
@@ -179,6 +179,17 @@ header .lightbulb {
     flex-wrap: wrap;
     gap: 10px;
     justify-content: center;
+    min-height: 80px;
+    padding: 15px;
+    border: 2px dashed #aaa;
+    border-radius: 12px;
+    background: #f9f9f9;
+    transition: background 0.3s;
+}
+
+.words.dragover {
+    background: #e3f2fd;
+    border-color: #4285F4;
 }
 
 /* Для перетаскиваемых слов */
@@ -195,48 +206,6 @@ header .lightbulb {
 }
 
 .wrong {
-    background: #ffcdd2 !important;
-    border: 2px solid #f44336;
-}
-/* Стиль для правильного/неправильного размещения */
-.correct {
-    background: #c8e6c9 !important;
-    border: 2px solid #4caf50;
-}
-
-.wrong {
-    background: #ffcdd2 !important;
-    border: 2px solid #f44336;
-}
-
-/* Стили для слов в колонках */
-.word-in-column {
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.3s;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-weight: 500;
-    min-width: 100px;
-    text-align: center;
-    margin: 5px;
-    background: #fff;
-    border: 1px solid #ddd;
-}
-
-.word-in-column:hover {
-    background: #f5f5f5;
-}
-
-.word-in-column.correct {
-    background: #c8e6c9 !important;
-    border: 2px solid #4caf50;
-}
-
-.word-in-column.wrong {
     background: #ffcdd2 !important;
     border: 2px solid #f44336;
 }
@@ -259,19 +228,83 @@ header .lightbulb {
     background: #45a049;
 }
 
-.word-bank {
-    margin-top: 30px;
-    min-height: 80px; /* Чтобы было куда перетаскивать */
+/* Адаптация для планшетов и телефонов */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    header {
+        padding: 15px;
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    /* На мобильных — 2 колонки */
+    .columns-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .column-header {
+        font-size: 1rem;
+        padding: 8px;
+    }
+
+    .column-body {
+        min-height: 100px;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .word, .word-in-column {
+        font-size: 0.9rem;
+        padding: 8px 10px;
+        min-width: 80px;
+    }
+
+    .hint-btn, #checkBtn {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+
+    .hint-box table {
+        font-size: 0.85rem;
+    }
+
+    .hint-box th, .hint-box td {
+        padding: 8px;
+    }
 }
 
-.words {
-    min-height: 60px; /* Чтобы в банк можно было перетащить */
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    padding: 10px;
-}
+/* Адаптация для маленьких телефонов */
+@media (max-width: 480px) {
+    .columns-container {
+        grid-template-columns: 1fr;
+    }
 
-/* Иконки */
-.word span.icon {
-    font-size: 1.2rem;
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .word, .word-in-column {
+        font-size: 0.85rem;
+        padding: 6px 8px;
+        min-width: 70px;
+    }
+
+    .column-header {
+        font-size: 0.95rem;
+    }
+
+    .hint-box table {
+        display: block;
+        overflow-x: auto;
+    }
 }
