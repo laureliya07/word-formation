@@ -39,11 +39,11 @@ const words = [
 
     { word: 'differ', icon: '↔️', adjective: 'different', suffix: '-ent' },
     { word: 'obey', icon: '👍', adjective: 'obedient', suffix: '-ent' },
-    { word: 'dependent', icon: '🔗', adjective: 'dependent', suffix: '-ent' },
+    { word: 'depend', icon: '🔗', adjective: 'dependent', suffix: '-ent' },
 
     { word: 'hesitate', icon: '🤔', adjective: 'hesitant', suffix: '-ant' },
     { word: 'tolerate', icon: '🤝', adjective: 'tolerant', suffix: '-ant' },
-    { word: 'important', icon: '❗', adjective: 'important', suffix: '-ant' },
+    { word: 'import', icon: '❗', adjective: 'important', suffix: '-ant' },
 
     { word: 'decide', icon: '✅', adjective: 'decisive', suffix: '-ive' },
     { word: 'active', icon: '⚡', adjective: 'active', suffix: '-ive' },
@@ -261,3 +261,4 @@ document.addEventListener('DOMContentLoaded', () => {
     createColumns();
     createWords();
 });
+
